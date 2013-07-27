@@ -4,11 +4,25 @@ pwc is the parallel vesion of the venerable Unix command line utility wc modifie
 
 ## How to install
 
-Be sure to have Java 1.7.0 installed. Then if you are on a Mac just use [Homebrew|http://brew.sh]:
+Please try:
+
+    java -version
+
+from the command line. 
+
+### jdk 1.7
 
     brew install pwc
 
-other platforms are supported as a Java executable:
+if you're on a mac.
+
+### jdk  1.6
+
+Download the correct [jsr166.jar|http://g.oswego.edu/dl/concurrency-interest/] to your endorsed Java Home folder (on Mac Mountain Lion, /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/lib/endorsed). A jsr166.jar is bundled with the github project if you happen to have jsk 1.6.0_51. 
+
+### Not on a Mac
+
+Other platforms are supported as a Java executable:
     
     curl -O pwc.jar
     java -jar pwc.jar [-clmw] [file ...]

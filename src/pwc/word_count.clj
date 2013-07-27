@@ -1,5 +1,8 @@
 (ns pwc.word-count
-  (:use midje.sweet))
+  (:require [clojure.core.reducers :as r]))
+
+(def hash-monoid
+  (r/monoid (partial merge-with +) hash-map))
 
 (defn order-by-frequency [m]
   "return copy of hashmap m ordered by values descending.
@@ -13,5 +16,7 @@
 (defn inc-or-add [m e]
   (assoc m e (inc (get m e 0))))
 
+
 (defn wc [text]
-    (order-by-frequency (reduce inc-or-add {} (tokenize text))))
+    (order-by-frequency 
+      (r/fold hash-monoid inc-or-add (tokenize text))))
