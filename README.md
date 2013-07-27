@@ -19,3 +19,9 @@ I suggest to save pwc.jar in a known location and create an alias in your .bash_
     pwc(){ java -jar /your/absolute/path/pwc.jar $1; }
 
 for everyday execution in your terminal.
+
+## TODO:
+* actual parallel word count algo
+* parsing of cmd line args 
+* immediate compatibility of basic usage
+* Homebrew plumbing
