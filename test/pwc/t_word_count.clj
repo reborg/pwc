@@ -11,22 +11,22 @@
 
 (facts "sentence tokenization"
        (fact "empty text is empty list"
-             (tokenize "") => [])
+             (into [] (tokenize "")) => [])
        (fact "single token text"
-             (tokenize "a") => ["a"])
+             (into [] (tokenize "a")) => ["a"])
        (fact "multiple tokens text"
-             (tokenize "a b cc") => ["a" "b" "cc"])
+             (into [] (tokenize "a b cc")) => ["a" "b" "cc"])
        (facts "special characters"
               (fact "newlines"
-                    (tokenize "a \n b") => ["a" "b"])
+                    (into [] (tokenize "a \n b")) => ["a" "b"])
               (fact "tabs"
-                    (tokenize "a \t b") => ["a" "b"])
+                    (into [] (tokenize "a \t b")) => ["a" "b"])
               (fact "null char"
-                    (tokenize "a \0 b") => ["a" "b"])
+                    (into [] (tokenize "a \0 b")) => ["a" "b"])
               (fact "everything"
-                    (tokenize "n1\0\tbc \ta") => ["n1" "bc" "a"]))
+                    (into [] (tokenize "n1\0\tbc \ta")) => ["n1" "bc" "a"]))
        (fact "optionally process words"
-             (tokenize "A Bb" #(.toLowerCase %))  => ["a" "bb"]))
+             (into [] (tokenize "A Bb" #(.toLowerCase %)))  => ["a" "bb"]))
 
 (facts "altering the counter maps"
        (fact "new map created if no element"

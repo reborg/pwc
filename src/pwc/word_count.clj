@@ -12,17 +12,19 @@
   Assumes values are numeric values comparable with >"
   (sort-by last > m))
    
-
 (defn tokenize 
   ([text]
     (tokenize text identity))
   ([text f]
-    (into [] (r/map f (re-seq #"\w+" text)))))
+    (r/map f (into [] (re-seq #"\w+" text)))))
 
 (defn inc-or-add [m e]
   (assoc m e (inc (get m e 0))))
 
-
 (defn wc [text]
     (order-by-frequency 
       (r/fold hash-monoid inc-or-add (tokenize text lowercase))))
+
+(defn nwc [text]
+    (order-by-frequency 
+      (reduce inc-or-add (hash-monoid) (tokenize text lowercase))))
