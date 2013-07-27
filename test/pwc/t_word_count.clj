@@ -1,5 +1,6 @@
 (ns pwc.t-word-count
   (:require midje.sweet)
+  (:require [clojure.java.io :as io])
   (:use [pwc.word-count]))
 
 (facts "sentence tokenization"
@@ -28,4 +29,9 @@
 
 (facts "counting words"
        (fact "a single word string"
-             (wc "a") => {"a" 1}))
+             (first (wc "a")) => ["a" 1])
+       (fact "frequencies are ordered DESC by default"
+             (first (wc "a a a b b c")) => ["a" 3])
+       (fact "some more complicated sample text"
+             (let [divina (slurp (io/resource "divina-commedia.txt"))]
+               (first (wc divina)) => ["e" 4476])))
