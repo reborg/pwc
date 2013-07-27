@@ -1,6 +1,9 @@
 (ns pwc.word-count
   (:require [clojure.core.reducers :as r]))
 
+(def lowercase
+  #(.toLowerCase %))
+
 (def hash-monoid
   (r/monoid (partial merge-with +) hash-map))
 
@@ -10,8 +13,11 @@
   (sort-by last > m))
    
 
-(defn tokenize [text]
-  (into [] (re-seq #"\w+" text)))
+(defn tokenize 
+  ([text]
+    (tokenize text identity))
+  ([text f]
+    (into [] (r/map f (re-seq #"\w+" text)))))
 
 (defn inc-or-add [m e]
   (assoc m e (inc (get m e 0))))
@@ -19,4 +25,4 @@
 
 (defn wc [text]
     (order-by-frequency 
-      (r/fold hash-monoid inc-or-add (tokenize text))))
+      (r/fold hash-monoid inc-or-add (tokenize text lowercase))))

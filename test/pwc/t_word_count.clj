@@ -24,7 +24,9 @@
               (fact "null char"
                     (tokenize "a \0 b") => ["a" "b"])
               (fact "everything"
-                    (tokenize "n1\0\tbc \ta") => ["n1" "bc" "a"])))
+                    (tokenize "n1\0\tbc \ta") => ["n1" "bc" "a"]))
+       (fact "optionally process words"
+             (tokenize "A Bb" #(.toLowerCase %))  => ["a" "bb"]))
 
 (facts "altering the counter maps"
        (fact "new map created if no element"
@@ -42,8 +44,9 @@
        (fact "frequencies are ordered DESC by default"
              (first (wc "a a a b b c")) => ["a" 3])
        (fact "some more complicated text"
+             werCase %)
              (let [divina (slurp (io/resource "divina-commedia.txt"))]
-               (first (wc divina)) => ["e" 4476]))
+               (first (wc divina)) => ["e" 4862])
        (fact "some more complicated text"
              (let [war (slurp (io/resource "war-and-peace.txt"))]
-               (first (time (wc war))) => ["the" 31950])))
+               (first (time (wc war))) => ["the" 34721])))
