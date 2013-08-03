@@ -5,4 +5,4 @@
 
 (facts "parsing of input file"
        (fact "exit with error on missing input"
-             (execute "pwc ") => 1))
+             (:exit (pwc-execute "")) => 1))

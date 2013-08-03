@@ -1,5 +1,7 @@
-(ns pwc.t-helper)
+(ns pwc.t-helper
+  (:require [clojure.java.shell :as sh]))
 
-(defn execute [cmd]
-  "Execute the string on the command line and return the output"
-  1)
+(defn pwc-execute [opts]
+  "Execute pwc on the given file and options after building the uberjar"
+  (sh/sh "/usr/bin/env" "lein" "uberjar")
+  (sh/sh "/usr/bin/env" "java" "-jar" "target/pwc.jar"))
