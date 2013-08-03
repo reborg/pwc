@@ -1,31 +1,19 @@
 (ns pwc.core
   (:use [clojure.tools.cli :only (cli)])
+  (:use [pwc.word-count :only (wc)])
+  (:require [clojure.pprint :as p])
   (:gen-class :main true))
-
-(defn run
-  "Print out the options and the arguments"
-  [opts args]
-  (println (str "Options:\n" opts "\n\n"))
-  (println (str "Arguments:\n" args "\n\n")))
 
 (defn -main [& args]
   "pwc execution main entry point"
   (let [[opts args banner] (cli args
-                                ["-h" "--help" "Show help" :flag true :default false]
-                                ["-d" "--delay" "Delay between messages (seconds)" :default 2]
-                                ["-f" "--from" "REQUIRED: From address"]
-                                ["-b" "--bcc" "OPTIONAL: BCC address"]
-                                ["-t" "--test" "Test mode does not send" :flag true :default false])]
-    (when (:help opts)
-      (println banner)
-      (System/exit 0))
-    (if
-      (and ;;required stuff
-        (:from opts)
-        true)
-      (do
-        (println "")
-        (run opts args))
+                                ["-c" "--chars" "not implemented" :flag true]
+                                ["-l" "--lines" "not implemented" :flag true]
+                                ["-m" "--multibte" "not implemented" :flag true]
+                                ["-w" "--words" "not implemented" :flag true])]
+    (if (empty? (filter #(not (= "" %)) args))
       (do 
-        (println banner)
-        (System/exit 1)))))
+        (println "Missing input file: pwc [-clmw] <file>. Other flags" banner)
+        (System/exit 1))
+      (do
+        (p/pprint (wc (slurp (first args))))))))

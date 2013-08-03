@@ -7,4 +7,10 @@
        (fact "exit with error on missing input file"
              (:exit (pwc-execute "")) => 1)
        (fact "exit success when mandatory arguments are obeyed"
-             (:exit (pwc-execute "-f" "yeah")) => 0))
+             (:exit (pwc-execute "-l" "README.md")) => 0))
+
+(facts "Manadatory Filename"
+       (fact "prints alert message on missing file"
+             (:out (pwc-execute "")) => (contains "Usage"))
+       (fact "print results"
+             (:out (pwc-execute "test/divina-commedia.txt")) => (contains "[\"e\" 4862]")))

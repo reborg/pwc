@@ -1,5 +1,5 @@
 (defproject pwc "0.0.1"
-  :description "The venerable wc unix command, parallel version."
+  :description "Like the venerable wc unix command, but parallel on multi-core CPUs"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/tools.cli "0.2.2"]]
   :plugins [[lein-midje "3.1.1"]]
