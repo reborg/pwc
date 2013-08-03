@@ -20,6 +20,7 @@ Please install Java.
 
 ### jdk 1.7 on a Mac
 
+    brew tap homebrew/reborg
     brew install pwc
 
 ### jdk  1.6 on a Mac
