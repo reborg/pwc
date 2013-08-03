@@ -21,10 +21,10 @@
 (defn inc-or-add [m e]
   (assoc m e (inc (get m e 0))))
 
-(defn wc [text]
-    (order-by-frequency 
-      (r/fold hash-monoid inc-or-add (tokenize text lowercase))))
-
-(defn nwc [text]
+(defn sequential-wc [text]
     (order-by-frequency 
       (reduce inc-or-add (hash-monoid) (tokenize text lowercase))))
+
+(defn wc [text]
+    (order-by-frequency 
+      (r/fold 5000 hash-monoid inc-or-add (tokenize text lowercase))))

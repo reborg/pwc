@@ -35,7 +35,7 @@ I suggest to save pwc.jar in a known location and create an alias in your .bash_
 for everyday execution in your terminal.
 
 ## TODO:
-* actual parallel word count algo
 * parsing of cmd line args 
 * immediate compatibility of basic usage
 * Homebrew plumbing
+* Calculate split based on size of the input

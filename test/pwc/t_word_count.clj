@@ -46,7 +46,11 @@
        (fact "some more complicated text"
              werCase %)
              (let [divina (slurp (io/resource "divina-commedia.txt"))]
-               (first (wc divina)) => ["e" 4862])
-       (fact "some more complicated text"
-             (let [war (slurp (io/resource "war-and-peace.txt"))]
+               (first (wc divina)) => ["e" 4862]))
+
+(facts "perfomances"
+       (let [war (slurp (io/resource "war-and-peace.txt"))]
+         (fact "sequential war and peace"
+               (first (time (sequential-wc war))) => ["the" 34721])
+         (fact "parallel war and peace"
                (first (time (wc war))) => ["the" 34721])))
