@@ -3,6 +3,8 @@
   (:use pwc.t-helper)
   (:use [pwc.cmd-line]))
 
-(facts "parsing of input file"
-       (fact "exit with error on missing input"
-             (:exit (pwc-execute "")) => 1))
+(facts "Exit codes"
+       (fact "exit with error on missing input file"
+             (:exit (pwc-execute "")) => 1)
+       (fact "exit success when mandatory arguments are obeyed"
+             (:exit (pwc-execute "-f" "yeah")) => 0))
