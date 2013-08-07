@@ -9,8 +9,8 @@
        (fact "exit success when mandatory arguments are obeyed"
              (:exit (pwc-execute "-l" "README.md")) => 0))
 
-(facts "Manadatory Filename"
+(facts "general usage facts"
        (fact "prints alert message on missing file"
              (:out (pwc-execute "")) => (contains "Usage"))
-       (fact "print results"
+       (fact "print the word count"
              (:out (pwc-execute "test/divina-commedia.txt")) => (contains "[\"e\" 4862]")))

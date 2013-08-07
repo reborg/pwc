@@ -1,4 +1,4 @@
-(ns pwc.word-count
+(ns pwc.word-freq
   (:require [clojure.core.reducers :as r]))
 
 (def lowercase
@@ -21,10 +21,10 @@
 (defn inc-or-add [m e]
   (assoc m e (inc (get m e 0))))
 
-(defn sequential-wc [text]
+(defn sequential-wf [text]
     (order-by-frequency 
       (reduce inc-or-add (hash-monoid) (tokenize text lowercase))))
 
-(defn wc [text]
+(defn wf [text]
     (order-by-frequency 
       (r/fold 5000 hash-monoid inc-or-add (tokenize text lowercase))))

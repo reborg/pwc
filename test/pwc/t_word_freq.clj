@@ -1,7 +1,7 @@
-(ns pwc.t-word-count
+(ns pwc.t-word-freq
   (:use midje.sweet)
   (:require [clojure.java.io :as io])
-  (:use [pwc.word-count]))
+  (:use [pwc.word-freq]))
 
 (facts "hash monoid"
        (fact "return the seed with no parameters"
@@ -40,17 +40,17 @@
 
 (facts "counting words"
        (fact "a single word string"
-             (first (wc "a")) => ["a" 1])
+             (first (wf "a")) => ["a" 1])
        (fact "frequencies are ordered DESC by default"
-             (first (wc "a a a b b c")) => ["a" 3])
+             (first (wf "a a a b b c")) => ["a" 3])
        (fact "some more complicated text"
              werCase %)
              (let [divina (slurp (io/resource "divina-commedia.txt"))]
-               (first (wc divina)) => ["e" 4862]))
+               (first (wf divina)) => ["e" 4862]))
 
 (facts "perfomances"
        (let [war (slurp (io/resource "war-and-peace.txt"))]
          (fact "sequential war and peace"
-               (first (time (sequential-wc war))) => ["the" 34721])
+               (first (time (sequential-wf war))) => ["the" 34721])
          (fact "parallel war and peace"
-               (first (time (wc war))) => ["the" 34721])))
+               (first (time (wf war))) => ["the" 34721])))

@@ -1,6 +1,6 @@
 (ns pwc.core
   (:use [clojure.tools.cli :only (cli)])
-  (:use [pwc.word-count :only (wc)])
+  (:use [pwc.word-freq :only (wf)])
   (:require [clojure.pprint :as p])
   (:gen-class :main true))
 
@@ -16,4 +16,4 @@
         (println "Missing input file: pwc [-clmw] <file>. Other flags" banner)
         (System/exit 1))
       (do
-        (p/pprint (wc (slurp (first args))))))))
+        (p/pprint (wf (slurp (first args))))))))

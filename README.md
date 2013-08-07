@@ -43,5 +43,7 @@ for everyday execution in your terminal.
 
 ## TODO:
 * immediate compatibility of basic usage
-* Homebrew plumbing
+* should not throw out of mem
+* should go faster than 20" for a 4GB file
+* Homebrew plumbing for quick and easy install
 * Calculate split based on size of the input
