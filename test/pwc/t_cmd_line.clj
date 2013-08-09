@@ -12,5 +12,5 @@
 (facts "general usage facts"
        (fact "prints alert message on missing file"
              (:out (pwc-execute "")) => (contains "Usage"))
-       (fact "print the word count"
-             (:out (pwc-execute "test/divina-commedia.txt")) => (contains "[\"e\" 4862]")))
+       (fact "word frequencies are not included by default"
+             (:out (pwc-execute "test/divina-commedia.txt")) => "   14723 105526 560110 test/divina-commedia.txt\n"))
