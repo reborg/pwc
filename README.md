@@ -1,10 +1,19 @@
 # pwc
 
-pwc is the parallel vesion of the venerable Unix command line utility wc modified to run in parallel on multiple cores using Clojure reducers.
+pwc is a parallel vesion of the venerable Unix command line utility wc modified to run on multiple cores using Clojure reducers. pwc also offers single words frequencies as optional output.
+
+## Is pwc really that faster than wc?
+
+pwc shines on multi-GB files. My benchmarks at the moment say that on a test 4Gb file on my laptop, wc output results in around 20" while pwc in 5". Also remember that pwc is calculating word frequencies as well!
+
+## What's added?
+
+* pwc calulcates word frequencies, while wc only counts lines, words and bytes.
 
 ## What's missing
 
-pwc doesn't support being part of a pipe at the moment, so a filename is required (instead of optional like wc).
+* pwc doesn't support being part of a pipe, so a filename is required (instead of optional like wc).
+* pwc accepts multiple file inputs at once
 
 ## How to install
 
@@ -42,8 +51,8 @@ I suggest to save pwc.jar in a known location and create an alias in your .bash_
 for everyday execution in your terminal.
 
 ## TODO:
-* immediate compatibility of basic usage
-* should not throw out of mem
-* should go faster than 20" for a 4GB file
-* Homebrew plumbing for quick and easy install
+* more compatibility with wc flags, at the moment none is implemented
+* should not throw out of mem for tests on big files
+* Homebrew plumbing for quick and easy install (still WIP)
+* Add ordering to the partial reduce-f split if that improves overall perfs
 * Calculate split based on size of the input
