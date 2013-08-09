@@ -3,54 +3,72 @@
   (:require [clojure.java.io :as io])
   (:use [pwc.word-freq]))
 
-(facts "hash monoid"
+(facts "combining function construction"
        (fact "return the seed with no parameters"
-             (hash-monoid) => {})
-       (fact "perform combination of two maps"
-             (hash-monoid {"a" 1} {"b" 2}) => {"a" 1 "b" 2}))
+             (combine-f) => seed)
+       (fact "summing up result counters from different threads"
+             (combine-f {:l 1 :w 1 :c 1 :f {}} {:l 1 :w 1 :c 1 :f {}}) => {:l 2 :w 2 :c 2 :f {}})
+       (fact "frequencies are merged with +"
+             (combine-f {:f {"a" 1 "b" 3}} {:f {"b" 5}}) => {:f {"a" 1 "b" 8}}))
 
-(facts "sentence tokenization"
+(facts "text is split into lines"
        (fact "empty text is empty list"
              (into [] (tokenize "")) => [])
        (fact "single token text"
              (into [] (tokenize "a")) => ["a"])
        (fact "multiple tokens text"
-             (into [] (tokenize "a b cc")) => ["a" "b" "cc"])
+             (into [] (tokenize "a b cc\n 123")) => ["a b cc" " 123"])
        (facts "special characters"
               (fact "newlines"
-                    (into [] (tokenize "a \n b")) => ["a" "b"])
+                    (into [] (tokenize "a \n b")) => ["a " " b"])
               (fact "tabs"
-                    (into [] (tokenize "a \t b")) => ["a" "b"])
+                    (into [] (tokenize "a \t b")) => ["a \t b"])
               (fact "null char"
-                    (into [] (tokenize "a \0 b")) => ["a" "b"])
+                    (into [] (tokenize "a \0 b")) => ["a \0 b"])
               (fact "everything"
-                    (into [] (tokenize "n1\0\tbc \ta")) => ["n1" "bc" "a"]))
+                    (into [] (tokenize "n1\0\tbc\n \ta")) => ["n1\0\tbc" " \ta"]))
        (fact "optionally process words"
-             (into [] (tokenize "A Bb" #(.toLowerCase %)))  => ["a" "bb"]))
+             (into [] (tokenize "A Bb" #(.toLowerCase %)))  => ["a bb"]))
+
+(facts "incrementing values in a map"
+       (fact "default increment of one"
+             (increment-key {:a 1} :a) => {:a 2})
+       (fact "leave the rest as it is"
+             (increment-key {:a 1 :b 0} :a) => {:a 2 :b 0})
+       (fact "create the key default to one"
+             (increment-key {:a 1} :z) => {:a 1 :z 1})
+       (fact "create the key incrementing it by the specified value"
+             (increment-key {:a 1} :z 3) => {:a 1 :z 3})
+       (fact "existing key is incremented by the specified value"
+             (increment-key {:a 1} :a 3) => {:a 4}))
 
 (facts "altering the counter maps"
-       (fact "new map created if no element"
-             (inc-or-add {} "a") => {"a" 1}
-             (inc-or-add {"b" 1} "a") => (contains {"a" 1}))
+       (fact "first line comes in"
+             (reduce-f seed "a b c") => {:l 1 :w 3 :c 5 :f {"a" 1 "b" 1 "c" 1}})
        (fact "already present element is incremented"
-             (inc-or-add {"a" 1} "a") => {"a" 2})
+             (reduce-f (reduce-f seed "a b c") "a") => {:l 2 :w 4 :c 6 :f {"a" 2 "b" 1 "c" 1}})
        (fact "it is perfectly happy to use the monoid"
-             (inc-or-add (hash-monoid) "a") => {"a" 1}))
+             (reduce-f (combine-f) "a") => {:l 1 :w 1 :c 1 :f {"a" 1}}))
 
+(facts "ordering sequences"
+       (order-by-frequency {:a "a" :f {"a" 1 "b" 2}}) => {:a "a" :f (list ["b" 2] ["a" 1])})
 
 (facts "counting words"
        (fact "a single word string"
-             (first (wf "a")) => ["a" 1])
+             (wf "a") => {:l 1 :w 1 :c 1 :f (list ["a" 1])}) 
        (fact "frequencies are ordered DESC by default"
-             (first (wf "a a a b b c")) => ["a" 3])
-       (fact "some more complicated text"
-             werCase %)
-             (let [divina (slurp (io/resource "divina-commedia.txt"))]
-               (first (wf divina)) => ["e" 4862]))
+             (first (:f (wf "a a a b b c"))) => ["a" 3])
+       (fact "divina commedia key facts"
+             (let [divina (slurp (io/resource "divina-commedia.txt"))
+                   res (wf divina)]
+               (first (:f res)) => ["e" 4862]
+               res => (contains {:c 560110})
+               res => (contains {:w 105526})
+               res => (contains {:l 14723}))))
 
 (facts "perfomances"
        (let [war (slurp (io/resource "war-and-peace.txt"))]
          (fact "sequential war and peace"
-               (first (time (sequential-wf war))) => ["the" 34721])
+               (first (:f (time (sequential-wf war)))) => ["the" 34721])
          (fact "parallel war and peace"
-               (first (time (wf war))) => ["the" 34721])))
+               (first (:f (time (wf war)))) => ["the" 34721])))

@@ -1,30 +1,60 @@
 (ns pwc.word-freq
+  (:require [clojure.string :as s])
   (:require [clojure.core.reducers :as r]))
+
+(def seed {:l 0 :w 0 :c 0 :f {}})
 
 (def lowercase
   #(.toLowerCase %))
 
-(def hash-monoid
-  (r/monoid (partial merge-with +) hash-map))
+(defn deep-merge-with
+  "Like merge-with, but merges maps recursively. If vals are not maps,
+  (apply f vals) determines the winner."
+  [f & vals]
+  ;;(let [p1 (println "1: " (:f (first vals)))
+  ;;      p2 (println "2: " (:f (second vals)))]
+    (letfn [(m [& vals]
+              (when (some identity vals)
+                (if (every? map? vals)
+                  (apply merge-with m vals)
+                  (apply f vals))))]
+      (apply m vals)))
+
+(def combine-f
+  (r/monoid (partial deep-merge-with +) (constantly seed)))
 
 (defn order-by-frequency [m]
-  "return copy of hashmap m ordered by values descending.
+  "return copy of the map m n which the key :f was ordered by values descending.
   Assumes values are numeric values comparable with >"
-  (sort-by last > m))
+  (assoc m :f (sort-by last > (:f m))))
    
 (defn tokenize 
   ([text]
     (tokenize text identity))
   ([text f]
-    (r/map f (into [] (re-seq #"\w+" text)))))
+    (r/filter #(not (= "" %)) (r/map f (s/split-lines text)))))
 
-(defn inc-or-add [m e]
-  (assoc m e (inc (get m e 0))))
+(defn increment-key 
+  "Work on associative structure m, fetching the given key if exists and
+  incrementing the integer value of the key by 1. If key does not exist adds
+  key with value 1. Accept optional value if required increment is different from one."
+  ([m k]
+    (increment-key m k 1))
+  ([m k v]
+    (assoc m k (+ v (get m k 0)))))
+
+(defn reduce-f [counters new-line]
+  (let [tokens (re-seq #"\w+" new-line)
+        new-freqs (reduce #(increment-key %1 %2) (:f counters) tokens)]
+  (-> counters 
+      (increment-key :l)
+      (increment-key :w (count tokens))
+      (increment-key :c (count (seq new-line)))
+      (assoc :f new-freqs))))
 
 (defn sequential-wf [text]
-    (order-by-frequency 
-      (reduce inc-or-add (hash-monoid) (tokenize text lowercase))))
+  (order-by-frequency (reduce reduce-f (combine-f) (tokenize text lowercase))))
 
 (defn wf [text]
-    (order-by-frequency 
-      (r/fold 5000 hash-monoid inc-or-add (tokenize text lowercase))))
+  (let [lines (tokenize text lowercase)]
+      (order-by-frequency (r/fold 5000 combine-f reduce-f lines))))
