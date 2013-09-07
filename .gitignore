@@ -2,6 +2,9 @@
 *jar
 /.lein-failures
 /.lein-deps-sum
-/target
 .lein-repl-history
 .nrepl-port
+
+target/*
+# But not these files...
+!target/pwc.jar
