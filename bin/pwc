@@ -1,2 +1,2 @@
 #! /usr/bin/env sh
-java -jar target/pwc.jar $1
+java -jar ../target/pwc.jar $1
