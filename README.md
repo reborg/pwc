@@ -30,7 +30,7 @@ from the command line to see on what Java version you're running. Then follow th
 
 ### jdk  1.6 on a Mac
 
-Download the correct [jsr166.jar|http://g.oswego.edu/dl/concurrency-interest/] to your endorsed Java Home folder (on Mac Mountain Lion, /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/lib/endorsed). A jsr166.jar is bundled with the github project if you happen to have jsk 1.6.0_51. 
+Download the correct [jsr166.jar](http://g.oswego.edu/dl/concurrency-interest/) to your endorsed Java Home folder (on Mac Mountain Lion, /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/lib/endorsed). A jsr166.jar is bundled with the github project if you happen to have jsk 1.6.0_51. 
 
 ### Not on a Mac
 
