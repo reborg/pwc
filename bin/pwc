@@ -1,2 +1,3 @@
-#! /usr/bin/env sh
-java -jar ../target/pwc.jar $1
+#!/bin/sh
+
+java -jar $PWD_HOME/target/pwc.jar $1
