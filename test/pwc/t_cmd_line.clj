@@ -13,4 +13,6 @@
        (fact "prints alert message on missing file"
              (:out (pwc-execute "")) => (contains "Usage"))
        (fact "word frequencies are not included by default"
-             (:out (pwc-execute "test/divina-commedia.txt")) => "   14723 105526 560110 test/divina-commedia.txt\n"))
+             (:out (pwc-execute "README.md")) => "   34 342 1940 README.md\n")
+       (fact "it also outputs frequencies"
+             (:out (pwc-execute "-f" "README.md")) => (contains "taps"))) 
