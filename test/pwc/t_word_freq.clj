@@ -44,11 +44,11 @@
 
 (facts "altering the counter maps"
        (fact "first line comes in"
-             (reduce-f seed "a b c") => {:l 1 :w 3 :c 5 :f {"a" 1 "b" 1 "c" 1}})
+             (reduce-freqs seed "a b c") => {:l 1 :w 3 :c 5 :f {"a" 1 "b" 1 "c" 1}})
        (fact "already present element is incremented"
-             (reduce-f (reduce-f seed "a b c") "a") => {:l 2 :w 4 :c 6 :f {"a" 2 "b" 1 "c" 1}})
+             (reduce-freqs (reduce-freqs seed "a b c") "a") => {:l 2 :w 4 :c 6 :f {"a" 2 "b" 1 "c" 1}})
        (fact "it is perfectly happy to use the monoid"
-             (reduce-f (combine-f) "a") => {:l 1 :w 1 :c 1 :f {"a" 1}}))
+             (reduce-freqs (combine-f) "a") => {:l 1 :w 1 :c 1 :f {"a" 1}}))
 
 (facts "ordering sequences"
        (order-by-frequency {:a "a" :f {"a" 1 "b" 2}}) => {:a "a" :f (list ["b" 2] ["a" 1])})
@@ -56,6 +56,8 @@
 (facts "counting words and frequencies"
        (fact "a single word string"
              (wf "a" :freq) => {:l 1 :w 1 :c 1 :f (list ["a" 1])}) 
+       (fact "a single word string but not frequencies"
+             (wf "a") => {:l 1 :w 1 :c 1 :f [] :tokens '("a")})
        (fact "frequencies are ordered DESC by default"
              (first (:f (wf "a a a b b c" :freq))) => ["a" 3])
        (fact "divina commedia key facts"
@@ -67,17 +69,19 @@
                res => (contains {:l 14723}))))
 
 (facts "skipping frequencies"
-       (fact "should not calculate frequencies"
-             (:f (wf "a a a b b c")) => [])) 
+       (fact "should not calculate frequencies in parallel"
+             (:f (wf "a a a b b c")) => [])
+       (fact "should not calculate frequencies in sequential version"
+             (:f (sequential-wf "a a a b b c")) => []))
  
 ;; long running acceptances
-(facts "perfomances"
-       (let [war (slurp (io/resource "war-and-peace.txt"))]
-         (fact "sequential war and peace"
-               (first (:f (time (sequential-wf war :freq)))) => ["the" 34721])
-         (fact "parallel war and peace"
-               (first (:f (time (wf war :freq)))) => ["the" 34721])
-         (fact "sequential war and peace no frequencies"
-               (:c (time (sequential-wf war))) => 3161608)
-         (fact "parallel war and peace no frequencies"
-               (:c (time (wf war))) => 3161608)))
+;;(facts "perfomances"
+;;       (let [war (slurp (io/resource "war-and-peace.txt"))]
+;;         (fact "sequential war and peace"
+;;               (first (:f (time (sequential-wf war :freq)))) => ["the" 34721])
+;;         (fact "parallel war and peace"
+;;               (first (:f (time (wf war :freq)))) => ["the" 34721])
+;;         (fact "sequential war and peace no frequencies"
+;;               (:c (time (sequential-wf war))) => 3161608)
+;;         (fact "parallel war and peace no frequencies"
+;;               (:c (time (wf war))) => 3161608)))
