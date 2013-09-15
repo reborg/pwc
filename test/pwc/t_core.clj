@@ -1,7 +1,6 @@
 (ns pwc.t-core
   (:use midje.sweet)
-  (:use pwc.t-helper)
-  (:use [pwc.cmd-line]))
+  (:use pwc.t-helper))
 
 (facts "Exit codes"
        (fact "exit with error on missing input file"

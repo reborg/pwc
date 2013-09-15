@@ -22,7 +22,7 @@
   (let [[opts args banner] (apply cli args options)]
     (if (empty-args? args)
       (print-msg-and-exit (str "Missing input file: pwc [-clmw] <file>. Other flags" banner))
-      (let [rs (wf (slurp (first args)))
+      (let [rs (wf (slurp (first args)) (:frequencies opts))
             lines (:l rs)
             words (:w rs)
             byts  (:c rs)]

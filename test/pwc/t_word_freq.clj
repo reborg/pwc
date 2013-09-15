@@ -53,23 +53,31 @@
 (facts "ordering sequences"
        (order-by-frequency {:a "a" :f {"a" 1 "b" 2}}) => {:a "a" :f (list ["b" 2] ["a" 1])})
 
-(facts "counting words"
+(facts "counting words and frequencies"
        (fact "a single word string"
-             (wf "a") => {:l 1 :w 1 :c 1 :f (list ["a" 1])}) 
+             (wf "a" :freq) => {:l 1 :w 1 :c 1 :f (list ["a" 1])}) 
        (fact "frequencies are ordered DESC by default"
-             (first (:f (wf "a a a b b c"))) => ["a" 3])
+             (first (:f (wf "a a a b b c" :freq))) => ["a" 3])
        (fact "divina commedia key facts"
              (let [divina (slurp (io/resource "divina-commedia.txt"))
-                   res (wf divina)]
+                   res (wf divina :freq)]
                (first (:f res)) => ["e" 4862]
                res => (contains {:c 560110})
                res => (contains {:w 105526})
                res => (contains {:l 14723}))))
+
+(facts "skipping frequencies"
+       (fact "should not calculate frequencies"
+             (:f (wf "a a a b b c")) => [])) 
  
 ;; long running acceptances
-;;(facts "perfomances"
-;;       (let [war (slurp (io/resource "war-and-peace.txt"))]
-;;         (fact "sequential war and peace"
-;;               (first (:f (time (sequential-wf war)))) => ["the" 34721])
-;;         (fact "parallel war and peace"
-;;               (first (:f (time (wf war)))) => ["the" 34721])))
+(facts "perfomances"
+       (let [war (slurp (io/resource "war-and-peace.txt"))]
+         (fact "sequential war and peace"
+               (first (:f (time (sequential-wf war :freq)))) => ["the" 34721])
+         (fact "parallel war and peace"
+               (first (:f (time (wf war :freq)))) => ["the" 34721])
+         (fact "sequential war and peace no frequencies"
+               (:c (time (sequential-wf war))) => 3161608)
+         (fact "parallel war and peace no frequencies"
+               (:c (time (wf war))) => 3161608)))

@@ -52,9 +52,23 @@
       (increment-key :c (count (seq new-line)))
       (assoc :f new-freqs))))
 
-(defn sequential-wf [text]
-  (order-by-frequency (reduce reduce-f (combine-f) (tokenize text lowercase))))
+(defn reducef-nofreq [counters new-line]
+  (let [tokens (re-seq #"\w+" new-line)]
+  (-> counters 
+      (increment-key :l)
+      (increment-key :w (count tokens))
+      (increment-key :c (count (seq new-line))))))
 
-(defn wf [text]
-  (let [lines (tokenize text lowercase)]
-      (order-by-frequency (r/fold 5000 combine-f reduce-f lines))))
+(defn sequential-wf 
+  ([text]
+   (order-by-frequency (reduce reducef-nofreq (combine-f) (tokenize text lowercase))))
+  ([text freq]
+   (order-by-frequency (reduce reduce-f (combine-f) (tokenize text lowercase)))))
+
+(defn wf 
+  ([text]
+   (let [lines (tokenize text lowercase)]
+     (assoc (r/fold 5000 combine-f reducef-nofreq lines) :f [])))
+  ([text freq]
+   (let [lines (tokenize text lowercase)]
+     (order-by-frequency (r/fold 5000 combine-f reduce-f lines)))))
