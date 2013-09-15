@@ -16,3 +16,8 @@
              (:out (pwc-execute "README.md")) => "   34 342 1940 README.md\n")
        (fact "it also outputs frequencies"
              (:out (pwc-execute "-f" "README.md")) => (contains "taps"))) 
+
+;; Lengthy test, uncomment when needed
+;; (facts "big files"
+;;        (fact "should not throw out of mem"
+;;              (.contains (:err (pwc-execute "~/tmp/huge-file.txt")) "Exception") => falsey))

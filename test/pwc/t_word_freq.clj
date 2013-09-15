@@ -65,10 +65,11 @@
                res => (contains {:c 560110})
                res => (contains {:w 105526})
                res => (contains {:l 14723}))))
-
-(facts "perfomances"
-       (let [war (slurp (io/resource "war-and-peace.txt"))]
-         (fact "sequential war and peace"
-               (first (:f (time (sequential-wf war)))) => ["the" 34721])
-         (fact "parallel war and peace"
-               (first (:f (time (wf war)))) => ["the" 34721])))
+ 
+;; long running acceptances
+;;(facts "perfomances"
+;;       (let [war (slurp (io/resource "war-and-peace.txt"))]
+;;         (fact "sequential war and peace"
+;;               (first (:f (time (sequential-wf war)))) => ["the" 34721])
+;;         (fact "parallel war and peace"
+;;               (first (:f (time (wf war)))) => ["the" 34721])))
