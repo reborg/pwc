@@ -4,9 +4,6 @@
 
 (def seed {:l 0 :w 0 :c 0 :f {}})
 
-(def lowercase
-  #(.toLowerCase %))
-
 (defn deep-merge-with
   "Like merge-with, but merges maps recursively. If vals are not maps,
   (apply f vals) determines the winner."
@@ -28,12 +25,6 @@
   Assumes values are numeric values comparable with >"
   (assoc m :f (sort-by last > (:f m))))
    
-(defn tokenize 
-  ([text]
-    (tokenize text identity))
-  ([text f]
-    (r/filter #(not (= "" %)) (r/map f (s/split-lines text)))))
-
 (defn increment-key 
   "Work on associative structure m, fetching the given key if exists and
   incrementing the integer value of the key by 1. If key does not exist adds
@@ -45,27 +36,25 @@
 
 (defn reduce-counters [counters new-line]
   (let [tokens (re-seq #"\w+" new-line)]
-    (assoc (-> counters 
+    (-> counters 
                (increment-key :l)
                (increment-key :w (count tokens))
-               (increment-key :c (count (seq new-line)))) :tokens tokens)))
+               (increment-key :c (count (seq new-line))))))
 
 (defn reduce-freqs [counters new-line]
   (let [new-counters (reduce-counters counters new-line)
-        tokens (:tokens new-counters)
+        tokens (re-seq #"\w+" new-line)
         new-freqs (reduce #(increment-key %1 %2) (:f counters) tokens)]
-    (assoc (dissoc new-counters :tokens) :f new-freqs)))
+    (assoc new-counters :f new-freqs)))
 
 (defn sequential-wf 
-  ([text]
-   (assoc (order-by-frequency (reduce reduce-counters (combine-f) (tokenize text lowercase))) :f []))
-  ([text freq]
-   (order-by-frequency (reduce reduce-freqs (combine-f) (tokenize text lowercase)))))
+  ([fseq]
+   (assoc (order-by-frequency (reduce reduce-counters (combine-f) (r/filter identity fseq))) :f []))
+  ([fseq freq]
+   (order-by-frequency (reduce reduce-freqs (combine-f) (r/filter identity fseq)))))
 
 (defn wf 
-  ([text]
-   (let [lines (tokenize text lowercase)]
-     (assoc (r/fold 5000 combine-f reduce-counters lines) :f [])))
-  ([text freq]
-   (let [lines (tokenize text lowercase)]
-     (order-by-frequency (r/fold 5000 combine-f reduce-freqs lines)))))
+  ([fseq]
+     (assoc (r/fold 5000 combine-f reduce-counters (r/filter identity fseq)) :f []))
+  ([fseq freq]
+     (order-by-frequency (r/fold 5000 combine-f reduce-freqs (r/filter identity fseq)))))
