@@ -4,6 +4,7 @@
 /.lein-deps-sum
 .lein-repl-history
 .nrepl-port
+tags
 
 target/*
 # But not these files...
