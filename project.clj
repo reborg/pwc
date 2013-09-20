@@ -1,4 +1,4 @@
-(defproject pwc "0.1.1"
+(defproject pwc "0.2.1"
   :description "Like the venerable wc unix command, but parallel on multi-core CPUs"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/tools.cli "0.2.2"]
