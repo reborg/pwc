@@ -4,7 +4,7 @@ pwc is a parallel vesion of the venerable Unix command line utility wc modified 
 
 ## Is pwc really that faster than wc?
 
-pwc shines on multi-GB files. My benchmarks at the moment say that on a test 4Gb file on my laptop, wc output results in around 20" while pwc in 5".
+pwc shines on multi-GB files. But it is still yet not faster than wc even including the JVM startup time. Reason for this is that it still requires a lot of optimizations: regexes must disappear, types should be explicit and many more. Working on it. Also keep in mind that word frequencies are adding time. I'm still confident it will be faster at some point.
 
 ## Additional features
 
@@ -45,6 +45,11 @@ I suggest to save pwc.jar in a known location and create an alias in your .bash_
     pwc(){ java -jar /your/absolute/path/pwc.jar $1; }
 
 for everyday execution in your terminal.
+
+## Thanks
+
+* https://github.com/thebusby/iota allows pwc to stream file into workers avoiding out-of-mem issues
+* the entire Clojure ecosystem :)
 
 ## TODO:
 * prevent frequencies to be calculated at all if not requested through a command line flag
