@@ -20,5 +20,5 @@
 (defn sequential-wf [fseq]
   (seq (reduce reduce-counters (combine-f) (r/filter identity fseq))))
 
-(defn wf [fseq]
+(defn wc [fseq]
   (seq (r/fold 5000 combine-f reduce-counters (r/filter identity fseq))))

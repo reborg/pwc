@@ -28,7 +28,7 @@
 (facts "counting words and frequencies"
        (fact "divina commedia key facts"
              (let [divina (iota-seq "divina-commedia.txt")
-                   res (wf divina)]
+                   res (wc divina)]
                res => (contains 580172)
                res => (contains 105521)
                res => (contains 20062))))
@@ -38,4 +38,4 @@
          ;;(fact "sequential war and peace"
          ;;      (last (time (sequential-wf war))) => 3226615)
          (fact "parallel war and peace"
-               (last (time (wf war))) => 3226615)))
+               (last (time (wc war))) => 3226615)))
