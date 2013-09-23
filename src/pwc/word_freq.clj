@@ -9,8 +9,6 @@
   "Like merge-with, but merges maps recursively. If vals are not maps,
   (apply f vals) determines the winner."
   [f & vals]
-  ;;(let [p1 (println "1: " (:f (first vals)))
-  ;;      p2 (println "2: " (:f (second vals)))]
     (letfn [(m [& vals]
               (when (some identity vals)
                 (if (every? map? vals)

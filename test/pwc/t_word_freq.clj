@@ -3,7 +3,7 @@
   (:use pwc.t-helper)
   (:use [pwc.word-freq]))
 
-(facts "combining function construction"
+(facts "combinef"
        (fact "return the seed with no parameters"
              (combine-f) => seed)
        (fact "summing up result counters from different threads"
@@ -33,7 +33,6 @@
 
 (facts "ordering sequences"
        (order-by-frequency {:a "a" :f {"a" 1 "b" 2}}) => {:a "a" :f (list ["b" 2] ["a" 1])})
-
 
 (facts "counting words and frequencies"
        (fact "divina commedia key facts"
