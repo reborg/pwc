@@ -6,5 +6,7 @@
   :plugins [[lein-midje "3.1.1"]]
   :main pwc.core
   :uberjar-name "pwc.jar"
+  :java-source-paths ["java"]
   :profiles {:dev {:dependencies [[midje "1.6-alpha2"]
+                                  [criterium "0.4.2"]
                                   [xrepl "0.1.1"]]}})

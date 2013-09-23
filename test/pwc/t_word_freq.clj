@@ -34,13 +34,14 @@
 (facts "ordering sequences"
        (order-by-frequency {:a "a" :f {"a" 1 "b" 2}}) => {:a "a" :f (list ["b" 2] ["a" 1])})
 
+
 (facts "counting words and frequencies"
        (fact "divina commedia key facts"
              (let [divina (iota-seq "divina-commedia.txt")
                    res (wf divina :freq)]
                (first (:f res)) => ["e" 4476]
                res => (contains {:c 580172})
-               res => (contains {:w 105526})
+               res => (contains {:w 105521})
                res => (contains {:l 20062}))))
 
 (facts "skipping frequencies"
