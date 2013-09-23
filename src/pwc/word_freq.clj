@@ -35,16 +35,18 @@
   ([m k v]
     (assoc m k (+ v (get m k 0)))))
 
-(defn reduce-counters [counters new-line]
-  (let [tokens (t/jtokenize new-line)]
-    (-> counters 
-               (increment-key :l)
-               (increment-key :w (count tokens))
-               (increment-key :c (count (seq new-line))))))
+(defn reduce-counters 
+  ([counters new-line]
+   (reduce-counters counters new-line (count (t/jtokenize new-line))))
+  ([counters new-line token-count]
+   (-> counters 
+       (increment-key :l)
+       (increment-key :w token-count)
+       (increment-key :c (count (seq new-line))))))
 
 (defn reduce-freqs [counters new-line]
-  (let [new-counters (reduce-counters counters new-line)
-        tokens (t/jtokenize new-line)
+  (let [tokens (t/jtokenize new-line)
+        new-counters (reduce-counters counters new-line (count tokens))
         new-freqs (reduce #(increment-key %1 %2) (:f counters) tokens)]
     (assoc new-counters :f new-freqs)))
 
