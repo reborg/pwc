@@ -1,6 +1,7 @@
 (ns pwc.word-freq
-  (:require [clojure.string :as s])
-  (:require [clojure.core.reducers :as r]))
+  (:require [clojure.string :as s]
+            [clojure.core.reducers :as r]
+            [pwc.tokenizer :as t]))
 
 (def seed {:l 0 :w 0 :c 0 :f {}})
 
@@ -35,7 +36,7 @@
     (assoc m k (+ v (get m k 0)))))
 
 (defn reduce-counters [counters new-line]
-  (let [tokens (re-seq #"\w+" new-line)]
+  (let [tokens (t/jtokenize new-line)]
     (-> counters 
                (increment-key :l)
                (increment-key :w (count tokens))
@@ -43,7 +44,7 @@
 
 (defn reduce-freqs [counters new-line]
   (let [new-counters (reduce-counters counters new-line)
-        tokens (re-seq #"\w+" new-line)
+        tokens (t/jtokenize new-line)
         new-freqs (reduce #(increment-key %1 %2) (:f counters) tokens)]
     (assoc new-counters :f new-freqs)))
 
