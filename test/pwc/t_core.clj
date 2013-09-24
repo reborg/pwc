@@ -16,7 +16,6 @@
        (fact "it also outputs frequencies"
              (:out (pwc-execute "-f" "README.md")) => (contains "taps"))) 
 
-
 ;; Lengthy test, uncomment when needed
 ;; (facts "big files"
 ;;        (fact "should not throw out of mem"

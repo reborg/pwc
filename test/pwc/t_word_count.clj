@@ -3,27 +3,23 @@
   (:use pwc.t-helper)
   (:use [pwc.word-count]))
 
-(facts "merging java arrays"
-       (fact "merging with plus"
-             (seq (merge-array-with + (long-array [1]) (long-array [1]))) => (seq (long-array [2])))
-       (fact "and no side effects?"
-             (let [a1 (long-array [1])
-                   res (merge-array-with + (long-array [1]) a1)]
-               (seq a1) => (list 1))))
+(fact "merging counters"
+             (mergewith + [1] [1]) => [2]
+             (mergewith + [1 2 3] [1 3 5]) => [2 5 8])
 
 (facts "combinef"
        (fact "return the seed with no parameters"
              (combine-f) => seed)
        (fact "summing up result counters from different threads"
-             (seq (combine-f (long-array [1 1 1]) (long-array [1 1 1]))) => (seq (long-array [2 2 2]))))
+             (combine-f [1 1 1] [1 1 1]) => [2 2 2]))
 
 (facts "altering the counter array"
        (fact "first line comes in"
-             (seq (reduce-counters seed "a b c")) => (seq (long-array [1 3 5])))
+             (reduce-counters seed "a b c") => [1 3 5])
        (fact "already present element is incremented"
-             (seq (reduce-counters (reduce-counters seed "a b c") "a")) => (seq (long-array [2 4 6])))
+             (reduce-counters (reduce-counters seed "a b c") "a") => [2 4 6])
        (fact "it is perfectly happy to use the monoid"
-             (seq (reduce-counters (combine-f) "a")) => (seq (long-array [1 1 1]))))
+             (reduce-counters (combine-f) "a") => [1 1 1]))
 
 (facts "counting words and frequencies"
        (fact "divina commedia key facts"

@@ -3,19 +3,18 @@
             [clojure.core.reducers :as r]
             [pwc.tokenizer :as t]))
 
-(def seed (long-array [0 0 0]))
+(def seed [0 0 0])
 
-(defn merge-array-with [f ^longs a1 ^longs a2]
-  (amap a2 i res 
-        (f (aget a1 i) (aget a2 i))))
+(defn mergewith [f v1 v2]
+  (vec (map + v1 v2)))
 
 (def combine-f
-  (r/monoid (partial merge-array-with +) (constantly seed)))
+  (r/monoid (partial mergewith +) (constantly seed)))
 
-(defn reduce-counters [acc ^String line]
+(defn reduce-counters [acc line]
    (let [tokens (t/jtokenize line)
-         delta (long-array [1 (count tokens) (count (seq line))])]
-     (merge-array-with + acc delta)))
+         delta [1 (count tokens) (count (seq line))]]
+     (mergewith + acc delta)))
 
 (defn sequential-wf [fseq]
   (seq (reduce reduce-counters (combine-f) (r/filter identity fseq))))
