@@ -12,7 +12,7 @@
        (fact "prints alert message on missing file"
              (:out (pwc-execute "")) => (contains "Usage"))
        (fact "word frequencies are not included by default"
-             (:out (pwc-execute "README.md")) => "   34 342 1940 README.md\n")
+             (:out (pwc-execute ".tmux")) => "   17 95 512 .tmux\n")
        (fact "it also outputs frequencies"
              (:out (pwc-execute "-f" "README.md")) => (contains "taps"))) 
 

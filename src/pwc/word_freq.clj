@@ -1,6 +1,7 @@
 (ns pwc.word-freq
-  (:require [clojure.string :as s])
-  (:require [clojure.core.reducers :as r]))
+  (:require [clojure.string :as s]
+            [clojure.core.reducers :as r]
+            [pwc.tokenizer :as t]))
 
 (def seed {:l 0 :w 0 :c 0 :f {}})
 
@@ -8,8 +9,6 @@
   "Like merge-with, but merges maps recursively. If vals are not maps,
   (apply f vals) determines the winner."
   [f & vals]
-  ;;(let [p1 (println "1: " (:f (first vals)))
-  ;;      p2 (println "2: " (:f (second vals)))]
     (letfn [(m [& vals]
               (when (some identity vals)
                 (if (every? map? vals)
@@ -34,27 +33,21 @@
   ([m k v]
     (assoc m k (+ v (get m k 0)))))
 
-(defn reduce-counters [counters new-line]
-  (let [tokens (re-seq #"\w+" new-line)]
-    (-> counters 
-               (increment-key :l)
-               (increment-key :w (count tokens))
-               (increment-key :c (count (seq new-line))))))
+(defn reduce-counters 
+  [counters new-line token-count]
+  (-> counters 
+      (increment-key :l)
+      (increment-key :w token-count)
+      (increment-key :c (count (seq new-line)))))
 
 (defn reduce-freqs [counters new-line]
-  (let [new-counters (reduce-counters counters new-line)
-        tokens (re-seq #"\w+" new-line)
+  (let [tokens (t/jtokenize new-line)
+        new-counters (reduce-counters counters new-line (count tokens))
         new-freqs (reduce #(increment-key %1 %2) (:f counters) tokens)]
     (assoc new-counters :f new-freqs)))
 
-(defn sequential-wf 
-  ([fseq]
-   (assoc (order-by-frequency (reduce reduce-counters (combine-f) (r/filter identity fseq))) :f []))
-  ([fseq freq]
-   (order-by-frequency (reduce reduce-freqs (combine-f) (r/filter identity fseq)))))
+(defn sequential-wf [fseq]
+  (order-by-frequency (reduce reduce-freqs (combine-f) (r/filter identity fseq))))
 
-(defn wf 
-  ([fseq]
-     (assoc (r/fold 5000 combine-f reduce-counters (r/filter identity fseq)) :f []))
-  ([fseq freq]
-     (order-by-frequency (r/fold 5000 combine-f reduce-freqs (r/filter identity fseq)))))
+(defn wf [fseq]
+  (order-by-frequency (r/fold 5000 combine-f reduce-freqs (r/filter identity fseq))))
