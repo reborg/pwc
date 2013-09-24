@@ -3,7 +3,7 @@
   (:use pwc.t-helper)
   (:use [pwc.word-freq]))
 
-(facts "combining function construction"
+(facts "combinef"
        (fact "return the seed with no parameters"
              (combine-f) => seed)
        (fact "summing up result counters from different threads"
@@ -34,29 +34,18 @@
 (facts "ordering sequences"
        (order-by-frequency {:a "a" :f {"a" 1 "b" 2}}) => {:a "a" :f (list ["b" 2] ["a" 1])})
 
-
 (facts "counting words and frequencies"
        (fact "divina commedia key facts"
              (let [divina (iota-seq "divina-commedia.txt")
-                   res (wf divina :freq)]
+                   res (wf divina)]
                (first (:f res)) => ["e" 4476]
                res => (contains {:c 580172})
                res => (contains {:w 105521})
                res => (contains {:l 20062}))))
 
-(facts "skipping frequencies"
-       (fact "should not calculate frequencies in parallel"
-             (:f (wf (iota-seq "divina-commedia.txt"))) => [])
-       (fact "should not calculate frequencies in sequential version"
-             (:f (sequential-wf (iota-seq "divina-commedia.txt"))) => []))
- 
 ;;(facts "perfomances (long running accepts)"
 ;;       (let [war (iota-seq "war-and-peace.txt")]
 ;;         (fact "sequential war and peace"
-;;               (first (:f (time (sequential-wf war :freq)))) => ["the" 31950])
+;;               (first (:f (time (sequential-wf war)))) => ["the" 31950])
 ;;         (fact "parallel war and peace"
-;;               (first (:f (time (wf war :freq)))) => ["the" 31950])
-;;         (fact "sequential war and peace no frequencies"
-;;               (:c (time (sequential-wf war))) => 3226615)
-;;         (fact "parallel war and peace no frequencies"
-;;               (:c (time (wf war))) => 3226615)))
+;;               (first (:f (time (wf war)))) => ["the" 31950])))
